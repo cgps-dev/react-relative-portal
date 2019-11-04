@@ -12,8 +12,11 @@ const styles = {
   oh: {
     position: 'relative',
     overflow: 'hidden',
-    width: 100,
-    height: 50,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 150,
+    height: 100,
     backgroundColor: '#F7F7F7',
   },
 };
@@ -76,6 +79,12 @@ export default class Demo extends React.Component {
                     <BadDropdown position="right">Dropdown content</BadDropdown>
                   </div>
                 </div>
+
+                <div style={styles.section}>
+                  <div style={styles.oh}>
+                    <BadDropdown position="right" direction="up">Dropdown content</BadDropdown>
+                  </div>
+                </div>
               </td>
               <td>
                 <div style={styles.section}>
@@ -105,6 +114,14 @@ export default class Demo extends React.Component {
                 <div style={styles.section}>
                   <div style={styles.oh}>
                     <Dropdown position="right">Dropdown content</Dropdown>
+                  </div>
+                </div>
+
+                <div style={styles.section}>
+                  <div style={styles.oh}>
+                    <Dropdown position="right" direction="up">
+                      Dropdown content
+                    </Dropdown>
                   </div>
                 </div>
               </td>

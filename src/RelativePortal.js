@@ -18,7 +18,7 @@ function getPageOffset() {
     y: (window.pageYOffset !== undefined)
       ? window.pageYOffset
       : (document.documentElement || document.body.parentNode || document.body).scrollTop,
-  }
+  };
 }
 
 function initDOMListener() {
@@ -54,6 +54,8 @@ export default class RelativePortal extends React.Component {
     left: PropTypes.number,
     fullWidth: PropTypes.bool,
     top: PropTypes.number,
+    bottom: PropTypes.number,
+    fullHeight: PropTypes.bool,
     children: PropTypes.any,
     onOutClick: PropTypes.func,
     component: PropTypes.string.isRequired,
@@ -68,6 +70,7 @@ export default class RelativePortal extends React.Component {
   state = {
     right: 0,
     left: 0,
+    bottom: 0,
     top: 0,
   };
 
@@ -76,12 +79,14 @@ export default class RelativePortal extends React.Component {
       if (this.element) {
         const rect = this.element.getBoundingClientRect();
         const pageOffset = getPageOffset();
+
+        const bottom = document.documentElement.clientHeight - rect.bottom - pageOffset.y;
         const top = pageOffset.y + rect.top;
         const right = document.documentElement.clientWidth - rect.right - pageOffset.x;
         const left = pageOffset.x + rect.left;
 
-        if (top !== this.state.top || left !== this.state.left || right !== this.state.right) {
-          this.setState({ left, top, right });
+        if (top !== this.state.top || bottom !== this.state.bottom || left !== this.state.left || right !== this.state.right) {
+          this.setState({ left, top, right, bottom });
         }
       }
     };
@@ -98,7 +103,7 @@ export default class RelativePortal extends React.Component {
   }
 
   render() {
-    const { component: Comp, top, left, right, fullWidth, ...props } = this.props;
+    const { component: Comp, left, right, fullWidth, top, bottom, fullHeight, ...props } = this.props;
 
     const fromLeftOrRight = right !== undefined ?
       { right: this.state.right + right } :
@@ -106,6 +111,13 @@ export default class RelativePortal extends React.Component {
 
     const horizontalPosition = fullWidth ?
       { right: this.state.right + right, left: this.state.left + left } : fromLeftOrRight;
+
+    const fromTopOrBottom = bottom !== undefined ?
+      { bottom: this.state.bottom + bottom } :
+      { top: this.state.top + top };
+
+    const verticalPosition = fullHeight ?
+      { bottom: this.state.bottom + bottom, top: this.state.top + top } : fromTopOrBottom;
 
     return (
       <Comp
@@ -117,8 +129,8 @@ export default class RelativePortal extends React.Component {
           <div
             style={{
               position: 'absolute',
-              top: this.state.top + top,
               ...horizontalPosition,
+              ...verticalPosition,
             }}
           >
             {this.props.children}
